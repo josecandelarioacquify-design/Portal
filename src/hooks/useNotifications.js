@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import useCurrentUser from './useCurrentUser'
 
@@ -18,9 +18,11 @@ export default function useNotifications() {
     enabled: !!user,
   })
 
+  const instanceId = useRef(Math.random().toString(36).slice(2))
+
   useEffect(() => {
     if (!user) return
-    const channelName = `notifications-realtime-${user.id}`
+    const channelName = `notifications-${user.id}-${instanceId.current}`
     const channel = supabase
       .channel(channelName)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
