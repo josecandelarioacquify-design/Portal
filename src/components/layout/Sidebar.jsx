@@ -12,12 +12,12 @@ const navItems = [
   { label: 'Documents', path: '/documents', icon: FileText },
   { label: 'Calendar', path: '/calendar', icon: CalendarDays },
   { label: 'Notifications', path: '/notifications', icon: Bell },
-  { label: 'Contacts', path: '/contacts', icon: Users, adminOnly: true },
+  { label: 'Contacts', path: '/contacts', icon: Users, contactsOnly: true },
 ]
 
 export default function Sidebar({ isOpen, onToggle }) {
   const location = useLocation()
-  const { user, isAdmin } = useCurrentUser()
+  const { user, isAdmin, canViewContacts } = useCurrentUser()
   const { unreadCount } = useNotifications()
 
   const handleLogout = async () => {
@@ -56,7 +56,7 @@ export default function Sidebar({ isOpen, onToggle }) {
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-1">
-          {navItems.filter(item => !item.adminOnly || isAdmin).map((item) => {
+          {navItems.filter(item => !item.contactsOnly || canViewContacts).map((item) => {
             const isActive = location.pathname === item.path
             const showBadge = item.path === '/notifications' && unreadCount > 0
             return (

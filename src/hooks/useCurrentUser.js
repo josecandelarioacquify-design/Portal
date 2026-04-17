@@ -19,6 +19,7 @@ export default function useCurrentUser() {
               ...user,
               full_name: profile?.full_name || user.email,
               role: profile?.role || 'client',
+              can_view_contacts: profile?.can_view_contacts || false,
               email: user.email,
             })
             setLoading(false)
@@ -30,6 +31,7 @@ export default function useCurrentUser() {
   }, [])
 
   const isAdmin = user?.role === 'admin'
+  const canViewContacts = user?.can_view_contacts === true
 
-  return { user, loading, isAdmin }
+  return { user, loading, isAdmin, canViewContacts }
 }
