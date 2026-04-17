@@ -20,14 +20,15 @@ export default function useNotifications() {
 
   useEffect(() => {
     if (!user) return
+    const channelName = `notifications-realtime-${user.id}`
     const channel = supabase
-      .channel('notifications-realtime')
+      .channel(channelName)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
         queryClient.invalidateQueries({ queryKey: ['notifications', user.email] })
       })
       .subscribe()
     return () => supabase.removeChannel(channel)
-  }, [user, queryClient])
+  }, [user?.id, queryClient])
 
   const markAsRead = useMutation({
     mutationFn: async (id) => {
